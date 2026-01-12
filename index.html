@@ -1,9 +1,105 @@
 
-<!doctype html>
-<html>
-  <head><meta charset="utf-8"><title>Smoke test</title></head>
-  <body>
-    <h1 style="font-family:Arial">GitHub Pages works ✅</h1>
-    <p>If you see this, your index.html is loading from the repo root.</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Dali WebAR Test — Elephant, Cloud, Man</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- A-Frame (WebXR/3D framework) -->
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe.min.js"></script>
+  <!-- MindAR (Image tracking + A-Frame integration) -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.6/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    html, body { margin:0; padding:0; height:100%; font-family: system-ui, Arial; background:#000; }
+    .caption {
+      position: fixed; top: 10px; left: 10px; right: 10px;
+      background: rgba(0,0,0,0.6); color:#fff; padding:8px 12px;
+      border-radius:6px; font-size:14px; z-index:10;
+    }
+    .ui-bar {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6); color: #fff; padding: 10px;
+      display: flex; gap: 8px; justify-content: center; align-items: center; z-index: 10;
+    }
+    .ui-btn {
+      background: #ffd700; color: #000; border: none; padding: 8px 12px;
+      font-weight: 600; border-radius: 6px; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Visible caption so you know the page loaded -->
+  <div class="caption">
+    Allow camera. Point at the SAME Dali image used to create <code>assets/dali.mind</code>.
+  </div>
+
+  <!-- WebAR scene using your compiled target -->
+  <a-scene
+    mindar-image="imageTargetSrc: ./assets/dali.mind"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: true"
+    embedded
+  >
+    <!-- Preload sprite images with IDs -->
+    <a-assets timeout="15000">
+      <img id="elephant" src="./assets/elephant.png" crossorigin="anonymous">
+      <img id="cloud"    src="./assets/cloud.png"    crossorigin="anonymous">
+      <img id="man"      src="./assets/man.png"      crossorigin="anonymous">
+    </a-assets>
+
+    <!-- Camera -->
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <!-- Content appears when targetIndex 0 is recognized -->
+    <a-entity mindar-image-target="targetIndex: 0">
+
+      <!-- 1) Elephant: gentle left-to-right movement -->
+      <a-image
+        src="#elephant"
+        position="-0.25 -0.28 0"
+        scale="0.55 0.55 1"
+        material="transparent: true; alphaTest: 0.5"
+        animation__move="property: position; to: 0.25 -0.28 0; dur: 4200; dir: alternate; loop: true; easing: easeInOutQuad"
+      ></a-image>
+
+      <!-- 2) Cloud: slow float upward/downward -->
+      <a-image
+        src="#cloud"
+        position="0 0.15 0"
+        scale="0.40 0.40 1"
+        material="transparent: true; alphaTest: 0.5"
+        animation__cloud="property: position; to: 0 0.35 0; dur: 5000; dir: alternate; loop: true; easing: easeInOutSine"
+      ></a-image>
+
+      <!-- 3) Man: cross right -> left -->
+      <a-image
+        src="#man"
+        position="0.30 -0.20 0"
+        scale="0.45 0.45 1"
+        material="transparent: true; alphaTest: 0.5"
+        animation__man="property: position; to: -0.30 -0.20 0; dur: 4000; dir: alternate; loop: true; easing: easeInOutQuad"
+      ></a-image>
+
+    </a-entity>
+  </a-scene>
+
+  <!-- Bottom UI -->
+  <div class="ui-bar">
+    <button class="ui-btn" id="btn-help">Screenshot Tips</button>
+  </div>
+
+  <script>
+    document.getElementById('btn-help').addEventListener('click', () => {
+      alert(
+        'Screenshot tips:\n\n' +
+        '- iPhone: Side Button + Volume Up.\n' +
+        '- Android: Power + Volume Down.\n' +
+        'Pose while the AR sprites move!'
+      );
+    });
+  </script>
+</body>
 </html>
+``
